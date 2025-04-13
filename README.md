@@ -1,28 +1,32 @@
 # Titanio-Rust-Telegram-Bot
 
-This is a simple Telegram bot written in Rust using the [`teloxide`](https://docs.rs/teloxide) framework. Every time someone sends the bot a message, it replies by rolling a fun Telegram dice 🎲!
+Titanio is a fun, modular Telegram bot written in [Rust](https://www.rust-lang.org/) using the [`teloxide`](https://docs.rs/teloxide) framework. It's a great starting point for building bots with async Rust!
+
 
 ## 🚀 Features
 
-- Built with [Rust](https://www.rust-lang.org/)
-- Uses [`tokio`](https://tokio.rs/) for async magic
-- Environment-based configuration using `.env`
-- Clear, minimal, and beginner-friendly!
+- [x] Built with Rust and [`tokio`](https://tokio.rs/) for async concurrency
+- [x] Modular command handling (`/help`, `/weather`, `/joke`, `/ping`, etc.)
+- [x] Environment-based config with `.env`
+- [x] Clean, beginner-friendly project structure
+- [x] Uses external APIs (like JokeAPI and wttr.in) with no login required
+
 
 ## 📦 Requirements
 
-Before running the bot, make sure you have the following:
+To run the bot, make sure you have:
 
-- Rust (Install from [rustup.rs](https://rustup.rs/))
-- A Telegram bot token (create one via [@BotFather](https://t.me/BotFather))
-- A `.env` file with your bot token
+- 🦀 [Rust](https://rustup.rs/) (use `rustup` to install)
+- 🔐 A Telegram bot token (from [@BotFather](https://t.me/BotFather))
+- 📄 A `.env` file with your token and optional API keys
+
 
 ## 🛠️ Setup
 
 1. **Clone the repo**
 
 ```bash
-git clone https://github.com/your-username/titanio-rust-telegram-bot.git
+git clone https://github.com/LoboGuardian/titanio-rust-telegram-bot.git
 cd titanio-rust-telegram-bot
 ```
 
@@ -32,6 +36,7 @@ In the root folder, create a .env file that looks like this:
 
 ```ini
 TELOXIDE_TOKEN=your_telegram_bot_token_here
+# Optional: other keys like weather API
 ```
 
 3. **Run the bot**
@@ -46,37 +51,66 @@ Your bot is now alive and rolling dice in reply to messages it receives! 🎉
 
 ```bash
 .
-├── .gitignore         # Files to ignore in Git
 ├── Cargo.toml         # Project metadata and dependencies
-├── LICENSE            # MIT License
+├── .env               # Environment variables (not committed)
 ├── README.md          # You're reading it!
+├── LICENSE            # MIT License
 └── src
-    └── main.rs        # Main bot logic
+    ├── main.rs        # Bot entry point and command dispatcher
+    └── commands/      # Modular handlers for each command
+        ├── about.rs
+        ├── echo.rs
+        ├── help.rs
+        ├── id.rs
+        ├── joke.rs
+        ├── mod.rs
+        ├── ping.rs
+        ├── roll.rs
+        ├── start.rs
+        ├── time.rs
+        └── weather.rs
 ```
 
-## 📜 How It Works
+## 💬 Supported Commands
 
-The bot uses the [teloxide::repl] function to set up a message loop. For every incoming message, it sends a dice emoji back to the same chat:
+| Command           | Description                                 |
+|-------------------|---------------------------------------------|
+| `/start`          | Greet the user                              |
+| `/help`           | Show available commands                     |
+| `/about`          | Info about the bot                          |
+| `/echo <text>`    | Echo back your message                      |
+| `/roll`           | Roll a Telegram dice                        |
+| `/id`             | Show your user ID and chat ID               |
+| `/time`           | Show the current server time                |
+| `/ping`           | Check if the bot is alive                   |
+| `/joke`           | Tell a random joke                          |
+| `/weather <city>` | Show weather info via wttr.in               |
 
-```rust
-teloxide::repl(bot, |bot: Bot, msg: Message| async move {
-    bot.send_dice(msg.chat.id).await?;
-    Ok(())
-}).await;
-```
+>   Want more? You can easily add /quote, /cat, /translate, or even /todo with just a bit of async Rust!
 
-## We also use:
+## 🛠 Tech & Crates Used
 
-dotenv to load the token from a .env file
+- [`teloxide`](https://docs.rs/teloxide) – Telegram Bot framework
+- [`tokio`](https://tokio.rs/) – async runtime
+- [`dotenv`]() – load .env config
+- [`reqwest`]() – HTTP client for APIs
+- [`serde`](https://serde.rs/) – JSON deserialization
+- [`log`](),[`pretty_env_logger`]()  – logging
 
-pretty_env_logger and log to log when the bot starts
 
 ## 🦀 Why Rust?
 
-Rust is a fast, safe, and fun systems programming language. If you're new to it, check out the [official Rust book](https://doc.rust-lang.org/book/). This project is a great way to dip your claws into async programming with Rust!
+Rust is fast, safe, and makes writing concurrent code a breeze. This bot project is a great way to learn about:
+
+- Async/await
+- External APIs
+- Modular design in Rust
+- Telegram bot development
+
+> New to Rust? Check out the [Rust Book](https://doc.rust-lang.org/book/). It’s free and amazing!
 
 ## 📄 License
 
-This project is licensed under the ![MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
 
-Happy botting! 🤖🐚
+Built with 🦀 and ❤️ for Telegram.
