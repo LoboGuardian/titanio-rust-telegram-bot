@@ -91,11 +91,11 @@ Your bot is now alive and rolling dice in reply to messages it receives! 🎉
 ## 🛠 Tech & Crates Used
 
 - [`teloxide`](https://docs.rs/teloxide) – Telegram Bot framework
-- [`tokio`](https://tokio.rs/) – async runtime
-- [`dotenv`]() – load .env config
-- [`reqwest`]() – HTTP client for APIs
-- [`serde`](https://serde.rs/) – JSON deserialization
-- [`log`](),[`pretty_env_logger`]()  – logging
+- [`tokio`](https://tokio.rs) – async runtime
+- [`dotenv`](https://docs.rs/dotenv) – load .env config
+- [`reqwest`](https://docs.rs/reqwest) – HTTP client for APIs
+- [`serde`](https://serde.rs) – JSON deserialization
+- [`log`](https://docs.rs/log),[`pretty_env_logger`](https://docs.rs/pretty_env_logger)  – logging
 
 
 ## 🦀 Why Rust?
