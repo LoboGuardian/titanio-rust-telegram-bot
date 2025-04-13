@@ -5,7 +5,7 @@ Titanio is a fun, modular Telegram bot written in [Rust](https://www.rust-lang.o
 
 ## 🚀 Features
 
-- [x] Built with Rust and [`tokio`](https://tokio.rs/) for async concurrency
+- [x] Built with Rust, [`teloxide`](https://github.com/teloxide/teloxide) framework and [`tokio`](https://tokio.rs/) for async concurrency
 - [x] Modular command handling (`/help`, `/weather`, `/joke`, `/ping`, etc.)
 - [x] Environment-based config with `.env`
 - [x] Clean, beginner-friendly project structure
