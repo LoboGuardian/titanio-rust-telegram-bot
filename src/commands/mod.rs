@@ -1,6 +1,9 @@
 pub mod help;
 pub mod start;
 pub mod echo;
+pub mod about;
+pub mod roll;
+pub mod id;
 
 use teloxide::types::Message;
 use teloxide::prelude::*;
@@ -20,6 +23,12 @@ pub enum Command {
     Start,
     #[command(description = "Echo a message.")]
     Echo(String),
+    #[command(description = "Show bot info.")]
+    About,
+    #[command(description = "Roll a random number.")]
+    Roll,
+    #[command(description = "Show your user ID and chat ID.")]
+    Id,
 }
 
 /// Main command handler function.
@@ -29,5 +38,8 @@ pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseR
         Command::Help => handle_help(bot, msg).await,
         Command::Start => handle_start(bot, msg).await,
         Command::Echo(text) => handle_echo(bot, msg, text).await,
+        Command::About => about::handle_about(bot, msg).await,
+        Command::Roll => roll::handle_roll(bot, msg).await,
+        Command::Id => id::handle_id(bot, msg).await,
     }
 }
