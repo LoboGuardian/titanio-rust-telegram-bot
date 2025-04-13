@@ -1,6 +1,6 @@
-use teloxide::{prelude::*, types::Message};
 use crate::commands::Command;
 use teloxide::utils::command::BotCommands;
+use teloxide::{prelude::*, types::Message};
 
 /// Sends the list of available commands to the user.
 pub async fn handle_help(bot: Bot, msg: Message) -> ResponseResult<()> {

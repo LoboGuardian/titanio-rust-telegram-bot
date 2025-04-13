@@ -1,8 +1,4 @@
-use teloxide::{
-    dispatching::Dispatcher,
-    error_handlers::LoggingErrorHandler,
-    prelude::*,
-};
+use teloxide::{dispatching::Dispatcher, error_handlers::LoggingErrorHandler, prelude::*};
 
 // use teloxide::dispatching::dialogue::InMemStorage;
 // This is for future use: dialogue-based state management for multi-step flows.
@@ -19,7 +15,7 @@ use commands::{Command, dispatch_command};
 async fn main() {
     // Load environment variables from `.env` file, such as TELOXIDE_TOKEN
     dotenv().ok();
-    
+
     // Initialize a pretty logger (uses `RUST_LOG` env var for filtering)
     pretty_env_logger::init();
     info!("Starting titanio-rust-telegram-bot...");
@@ -47,4 +43,3 @@ async fn main() {
     .dispatch()
     .await;
 }
-

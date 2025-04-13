@@ -1,16 +1,16 @@
-pub mod help;
-pub mod start;
-pub mod echo;
 pub mod about;
-pub mod roll;
+pub mod echo;
+pub mod help;
 pub mod id;
-pub mod time;
-pub mod ping;
 pub mod joke;
+pub mod ping;
+pub mod roll;
+pub mod start;
+pub mod time;
 pub mod weather;
 
-use teloxide::types::Message;
 use teloxide::prelude::*;
+use teloxide::types::Message;
 use teloxide::utils::command::BotCommands;
 
 /// Enumeration of supported bot commands

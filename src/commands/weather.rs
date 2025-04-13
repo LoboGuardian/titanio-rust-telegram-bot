@@ -1,6 +1,6 @@
-use teloxide::{prelude::*, types::Message};
 use reqwest::Client;
 use serde::Deserialize;
+use teloxide::{prelude::*, types::Message};
 
 #[derive(Debug, Deserialize)]
 struct WeatherData {
@@ -15,7 +15,6 @@ struct CurrentCondition {
     #[serde(rename = "weatherDesc")]
     weather_desc: Vec<WeatherDesc>,
 }
-
 
 #[derive(Debug, Deserialize)]
 struct WeatherDesc {

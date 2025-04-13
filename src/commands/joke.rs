@@ -1,6 +1,6 @@
-use teloxide::{prelude::*, types::Message};
 use reqwest::Client;
 use serde::Deserialize;
+use teloxide::{prelude::*, types::Message};
 
 #[derive(Debug, Deserialize)]
 #[serde(untagged)]
@@ -18,13 +18,11 @@ pub async fn handle_joke(bot: Bot, msg: Message) -> ResponseResult<()> {
         .await;
 
     let joke_text = match res {
-        Ok(response) => {
-            match response.json::<JokeResponse>().await {
-                Ok(JokeResponse::Single { joke }) => joke,
-                Ok(JokeResponse::TwoPart { setup, delivery }) => format!("{}\n{}", setup, delivery),
-                Err(_) => "😵 Couldn't parse the joke!".to_string(),
-            }
-        }
+        Ok(response) => match response.json::<JokeResponse>().await {
+            Ok(JokeResponse::Single { joke }) => joke,
+            Ok(JokeResponse::TwoPart { setup, delivery }) => format!("{}\n{}", setup, delivery),
+            Err(_) => "😵 Couldn't parse the joke!".to_string(),
+        },
         Err(_) => "😓 Couldn't fetch a joke right now. Try again later.".to_string(),
     };
 
