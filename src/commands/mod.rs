@@ -9,10 +9,6 @@ use teloxide::types::Message;
 use teloxide::prelude::*;
 use teloxide::utils::command::BotCommands;
 
-use help::handle_help;
-use start::handle_start;
-use echo::handle_echo;
-
 /// Enumeration of supported bot commands
 #[derive(BotCommands, Clone)]
 #[command(rename_rule = "lowercase", description = "Available commands:")]
@@ -35,9 +31,9 @@ pub enum Command {
 /// Dispatches each command variant to its respective handler.
 pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
     match cmd {
-        Command::Help => handle_help(bot, msg).await,
-        Command::Start => handle_start(bot, msg).await,
-        Command::Echo(text) => handle_echo(bot, msg, text).await,
+        Command::Help => help::handle_help(bot, msg).await,
+        Command::Start => start::handle_start(bot, msg).await,
+        Command::Echo(text) => echo::handle_echo(bot, msg, text).await,
         Command::About => about::handle_about(bot, msg).await,
         Command::Roll => roll::handle_roll(bot, msg).await,
         Command::Id => id::handle_id(bot, msg).await,
