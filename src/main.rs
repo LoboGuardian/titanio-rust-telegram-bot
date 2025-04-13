@@ -7,8 +7,8 @@ use teloxide::{
 // use teloxide::dispatching::dialogue::InMemStorage;
 // This is for future use: dialogue-based state management for multi-step flows.
 
-// use dotenv::dotenv;
-// use log::info;
+use dotenv::dotenv;
+use log::info;
 
 mod commands;
 use commands::{Command, dispatch_command};
@@ -18,11 +18,11 @@ use commands::{Command, dispatch_command};
 #[tokio::main]
 async fn main() {
     // Load environment variables from `.env` file, such as TELOXIDE_TOKEN
-    dotenv::dotenv().ok();
+    dotenv().ok();
     
     // Initialize a pretty logger (uses `RUST_LOG` env var for filtering)
     pretty_env_logger::init();
-    log::info!("Starting titanio-rust-telegram-bot...");
+    info!("Starting titanio-rust-telegram-bot...");
 
     // Retrieve the bot token from the TELOXIDE_TOKEN environment variable
     let bot = Bot::from_env();
