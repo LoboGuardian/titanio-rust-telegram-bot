@@ -4,6 +4,10 @@ pub mod echo;
 pub mod about;
 pub mod roll;
 pub mod id;
+pub mod time;
+pub mod ping;
+pub mod joke;
+pub mod weather;
 
 use teloxide::types::Message;
 use teloxide::prelude::*;
@@ -25,6 +29,14 @@ pub enum Command {
     Roll,
     #[command(description = "Show your user ID and chat ID.")]
     Id,
+    #[command(description = "Show the current time.")]
+    Time,
+    #[command(description = "Check if the bot is alive.")]
+    Ping,
+    #[command(description = "Tell a random joke.")]
+    Joke,
+    #[command(description = "Check the weather in a city.")]
+    Weather(String),
 }
 
 /// Main command handler function.
@@ -37,5 +49,9 @@ pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseR
         Command::About => about::handle_about(bot, msg).await,
         Command::Roll => roll::handle_roll(bot, msg).await,
         Command::Id => id::handle_id(bot, msg).await,
+        Command::Time => time::handle_time(bot, msg).await,
+        Command::Ping => ping::handle_ping(bot, msg).await,
+        Command::Joke => joke::handle_joke(bot, msg).await,
+        Command::Weather(city) => weather::handle_weather(bot, msg, city).await,
     }
 }
