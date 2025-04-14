@@ -2,8 +2,10 @@
 name = "titanio-rust-telegram-bot"
 version = "0.1.0"
 edition = "2024"
+authors = ["LoboGuardian"]
 description = "A Telegram bot written in Rust using teloxide"
 repository = "https://github.com/LoboGuardian/titanio-rust-telegram-bot"
+
 license = "MIT"
 
 [dependencies]

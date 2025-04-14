@@ -97,6 +97,11 @@ Your bot is now alive and rolling dice in reply to messages it receives! 🎉
 - [`serde`](https://serde.rs) – JSON deserialization
 - [`log`](https://docs.rs/log),[`pretty_env_logger`](https://docs.rs/pretty_env_logger)  – logging
 
+## 🃏 A joke
+
+Why not?
+
+![alt text](assets/joke.png)
 
 ## 🦀 Why Rust?
 
