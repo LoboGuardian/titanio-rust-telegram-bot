@@ -1,3 +1,5 @@
+pub use crate::fallback::unknown_command::handle_unknown_command;
+
 pub mod fun {
     pub mod joke;
     pub mod roll;
@@ -13,7 +15,6 @@ pub mod info {
 pub mod system {
     pub mod ping;
     pub mod start;
-    pub mod unrecognized;
 }
 
 pub mod utils {

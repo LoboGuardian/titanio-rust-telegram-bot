@@ -56,41 +56,57 @@ Your bot is now alive and rolling dice in reply to messages it receives! 🎉
 ├── README.md          # You're reading it!
 ├── LICENSE            # MIT License
 └── src
-    ├── main.rs        # Bot entry point and command dispatcher
-    └── commands/      # Modular handlers for each command
-        ├── fun/
-        │   ├── joke.rs
-        │   └── roll.rs
-        ├── info/
-        │   ├── about.rs
-        │   ├── help.rs
-        │   ├── id.rs
-        │   └── time.rs
-        ├── system/
-        │   ├── start.rs
-        │   ├── ping.rs
-        │   └── unrecognized.rs
-        ├── utils/
-        │   ├── echo.rs
-        │   ├── currency.rs
-        │   └── weather.rs
-        └── mod.rs
+    ├── commands/          # Modular command handlers
+    │   ├── fun/           # Fun and random commands
+    │   │   ├── joke.rs
+    │   │   └── roll.rs
+    │   ├── info/          # Informational and meta commands
+    │   │   ├── about.rs
+    │   │   ├── help.rs
+    │   │   ├── id.rs
+    │   │   └── time.rs
+    │   ├── system/        # System-related and bot control commands
+    │   │   ├── start.rs
+    │   │   └── ping.rs
+    │   ├── utils/         # Utility and API-integrated commands
+    │   │   ├── echo.rs
+    │   │   ├── currency.rs
+    │   │   └── weather.rs
+    │   └── mod.rs         # Command enum and dispatch logic
+    ├── fallback/          # Fallback handlers for invalid/unknown input
+    │   ├── mod.rs
+    │   └── unrecognized.rs
+    └─── main.rs           # Bot entry point and command dispatcher setup
 ```
 
 ## 💬 Supported Commands
 
-| Command           | Description                                 |
-|-------------------|---------------------------------------------|
-| `/start`          | Greet the user                              |
-| `/help`           | Show available commands                     |
-| `/about`          | Info about the bot                          |
-| `/echo <text>`    | Echo back your message                      |
-| `/roll`           | Roll a Telegram dice                        |
-| `/id`             | Show your user ID and chat ID               |
-| `/time`           | Show the current server time                |
-| `/ping`           | Check if the bot is alive                   |
-| `/joke`           | Tell a random joke                          |
-| `/weather <city>` | Show weather info via wttr.in               |
+### 🎉 Fun
+| Command       | Description            |
+|---------------|------------------------|
+| `/joke`       | Tell a random joke     |
+| `/roll`       | Roll a Telegram dice   |
+
+### ℹ️ Info
+| Command     | Description                           |
+|-------------|---------------------------------------|
+| `/about`    | Info about the bot                    |
+| `/help`     | Show available commands               |
+| `/id`       | Show your user ID and chat ID         |
+| `/time`     | Show the current server time          |
+
+### ⚙️ System
+| Command     | Description               |
+|-------------|---------------------------|
+| `/start`    | Greet the user            |
+| `/ping`     | Check if the bot is alive |
+
+### 🛠️ Utilities
+| Command             | Description                                       |
+|---------------------|---------------------------------------------------|
+| `/echo <text>`      | Echo back your message                            |
+| `/weather <city>`   | Show weather info using [wttr.in](https://wttr.in)|
+| `/currency <query>` | Convert amount from one currency to another       |
 
 >   Want more? You can easily add /quote, /cat, /translate, or even /todo with just a bit of async Rust!
 
