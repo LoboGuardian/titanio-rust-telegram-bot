@@ -48,7 +48,15 @@ async fn main() {
                 .endpoint(dispatch_command),
         )
         // Fallback for unrecognized commands.
-        .branch(Update::filter_message().endpoint(handle_unknown_command));
+        .branch(
+            Update::filter_message()
+                .filter(|msg: Message| {
+                    msg.text()
+                        .map(|t| t.starts_with('/'))
+                        .unwrap_or(false)
+                })
+                .endpoint(handle_unknown_command),
+        );
 
     // Build the dispatcher that handles incoming Telegram updates
     Dispatcher::builder(
