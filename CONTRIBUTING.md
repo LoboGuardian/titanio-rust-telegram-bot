@@ -83,7 +83,7 @@ Here's how you can contribute code to Titanio:
     ```
     git push origin feature/my-new-feature
     ```
-10. **Create a pull request:** Submit a pull request to the `master` branch of the Titanio repository.
+10. **Create a pull request:** Submit a pull request to the `main` branch of the Titanio repository.
 
     * Provide a clear description of your changes in the pull request.
     * Reference any related issues.
