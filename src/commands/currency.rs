@@ -68,7 +68,7 @@ pub async fn handle_currency(bot: Bot, msg: Message, text: String) -> ResponseRe
                 if data.success {
                     format!("🔄 {} {} = {} {}", parts[0], parts[1], data.result.unwrap_or(0.0), parts[2])
                 } else {
-                    let err_msg = match data.error {
+                    match data.error {
                         None => {
                             "⚠️ Failed to fetch currency data. Try again later.".to_string()
                         }
@@ -80,8 +80,8 @@ pub async fn handle_currency(bot: Bot, msg: Message, text: String) -> ResponseRe
                                 msg.info
                             }
                         }
-                    };
-                    err_msg
+                    }
+
                 }
             }
             Err(_) => {
