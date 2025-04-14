@@ -8,6 +8,7 @@ pub mod roll;
 pub mod start;
 pub mod time;
 pub mod weather;
+pub mod unrecognized;
 
 use teloxide::prelude::*;
 use teloxide::types::Message;

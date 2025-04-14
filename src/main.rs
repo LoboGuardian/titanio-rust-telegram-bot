@@ -8,7 +8,7 @@ use log::info;
 
 mod commands;
 use commands::{Command, dispatch_command};
-
+use crate::commands::unrecognized::handle_unrecognized;
 // Entry point of the bot.
 // The `#[tokio::main]` macro starts the Tokio async runtime automatically.
 
@@ -38,15 +38,19 @@ async fn main() {
         Err(err) => log::error!("Failed to verify bot identity: {:?}", err),
     }
 
-    // Build the dispatcher that handles incoming Telegram updates
-    Dispatcher::builder(
-        // Cloning the bot is cheap: it's internally reference-counted
-        bot.clone(),
-        Update::filter_message()
+    let command_handler = dptree::entry()
+        .branch(Update::filter_message()
             // Only handle messages that are bot commands
             .filter_command::<Command>()
             // Route matching commands to `handle_command`
-            .endpoint(dispatch_command),
+            .endpoint(dispatch_command))
+        // Fallback for unrecognized commands.
+        .branch(Update::filter_message().endpoint(handle_unrecognized));
+
+    // Build the dispatcher that handles incoming Telegram updates
+    Dispatcher::builder(
+        // Cloning the bot is cheap: it's internally reference-counted
+        bot.clone(), command_handler
     )
     // Handle updates that didn't match any known command
     .default_handler(|upd| async move {
