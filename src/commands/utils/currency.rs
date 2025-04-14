@@ -1,7 +1,7 @@
-use std::env;
-use log::{error};
+use log::error;
 use reqwest::Client;
 use serde::Deserialize;
+use std::env;
 use teloxide::Bot;
 use teloxide::prelude::Message;
 use teloxide::requests::{Requester, ResponseResult};

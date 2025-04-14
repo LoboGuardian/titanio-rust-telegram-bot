@@ -1,46 +1,72 @@
-pub mod about;
-pub mod currency;
-pub mod echo;
-pub mod help;
-pub mod id;
-pub mod joke;
-pub mod ping;
-pub mod roll;
-pub mod start;
-pub mod time;
-pub mod unrecognized;
-pub mod weather;
+pub use crate::fallback::unknown_command::handle_unknown_command;
+
+pub mod fun {
+    pub mod joke;
+    pub mod roll;
+}
+
+pub mod info {
+    pub mod about;
+    pub mod help;
+    pub mod id;
+    pub mod time;
+}
+
+pub mod system {
+    pub mod ping;
+    pub mod start;
+}
+
+pub mod utils {
+    pub mod currency;
+    pub mod echo;
+    pub mod weather;
+}
 
 use teloxide::prelude::*;
 use teloxide::types::Message;
 use teloxide::utils::command::BotCommands;
 
+use crate::commands::{
+    fun::{joke, roll},
+    info::{about, help, id, time},
+    system::{ping, start},
+    utils::{currency, echo, weather},
+};
+
 /// Enumeration of supported bot commands
 #[derive(BotCommands, Clone)]
 #[command(rename_rule = "lowercase", description = "Available commands:")]
 pub enum Command {
-    #[command(description = "Display this help message.")]
-    Help,
+    // System
     #[command(description = "Start the bot.")]
     Start,
-    #[command(description = "Echo a message.")]
-    Echo(String),
+    #[command(description = "Check if the bot is alive.")]
+    Ping,
+
+    // Info
+    #[command(description = "Display this help message.")]
+    Help,
     #[command(description = "Show bot info.")]
     About,
-    #[command(description = "Roll a random number.")]
-    Roll,
     #[command(description = "Show your user ID and chat ID.")]
     Id,
     #[command(description = "Show the current time.")]
     Time,
-    #[command(description = "Check if the bot is alive.")]
-    Ping,
-    #[command(description = "Tell a random joke.")]
-    Joke,
+
+    // Utils
+    #[command(description = "Echo a message.")]
+    Echo(String),
     #[command(description = "Check the weather in a city.")]
     Weather(String),
     #[command(description = "Convert amount from one currency to another.")]
     Currency(String),
+
+    // Fun
+    #[command(description = "Roll a random number.")]
+    Roll,
+    #[command(description = "Tell a random joke.")]
+    Joke,
 }
 
 /// Main command handler function.
