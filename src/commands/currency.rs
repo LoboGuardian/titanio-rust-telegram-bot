@@ -40,24 +40,30 @@ struct ErrorData {
 // - Usage beyond the free tier may require upgrading to a paid plan.
 // For more about pricing, visit: [https://exchangerate.host/pricing](https://exchangerate.host/pricing)
 pub async fn handle_currency(bot: Bot, msg: Message, text: String) -> ResponseResult<()> {
-
     let api_key = match env::var("EXCHANGERATE_TOKEN") {
         Ok(key) => key,
         Err(_) => {
             error!("EXCHANGERATE_TOKEN environment variable is not set");
-            return Ok(())
+            return Ok(());
         }
     };
 
     let parts = match parse_currency_args(text) {
         Ok(parts) => parts,
         Err(_) => {
-            bot.send_message(msg.chat.id, "Usage: /currency <amount> <from> <to>\nExample: /currency 100 USD EUR").await?;
+            bot.send_message(
+                msg.chat.id,
+                "Usage: /currency <amount> <from> <to>\nExample: /currency 100 USD EUR",
+            )
+            .await?;
             return Ok(());
         }
     };
 
-    let url = format!("https://api.exchangerate.host/convert?access_key={}&from={}&to={}&amount={}",api_key, parts[1], parts[2], parts[0]);
+    let url = format!(
+        "https://api.exchangerate.host/convert?access_key={}&from={}&to={}&amount={}",
+        api_key, parts[1], parts[2], parts[0]
+    );
 
     let client = Client::new();
     let response = client.get(&url).send().await;
@@ -66,12 +72,16 @@ pub async fn handle_currency(bot: Bot, msg: Message, text: String) -> ResponseRe
         Ok(resp) => match resp.json::<ExchangerateResponse>().await {
             Ok(data) => {
                 if data.success {
-                    format!("🔄 {} {} = {} {}", parts[0], parts[1], data.result.unwrap_or(0.0), parts[2])
+                    format!(
+                        "🔄 {} {} = {} {}",
+                        parts[0],
+                        parts[1],
+                        data.result.unwrap_or(0.0),
+                        parts[2]
+                    )
                 } else {
-                    match data.error {
-                        None => {
-                            "⚠️ Failed to fetch currency data. Try again later.".to_string()
-                        }
+                    let err_msg = match data.error {
+                        None => "⚠️ Failed to fetch currency data. Try again later.".to_string(),
                         Some(msg) => {
                             if msg.code >= 100 && msg.code < 200 {
                                 error!("{}", msg.info);
@@ -80,13 +90,11 @@ pub async fn handle_currency(bot: Bot, msg: Message, text: String) -> ResponseRe
                                 msg.info
                             }
                         }
-                    }
-
+                    };
+                    err_msg
                 }
             }
-            Err(_) => {
-                "❌ Couldn't parse currency data.".to_string()
-            }
+            Err(_) => "❌ Couldn't parse currency data.".to_string(),
         },
         Err(_) => "⚠️ Failed to fetch currency data. Try again later.".to_string(),
     };
@@ -97,7 +105,7 @@ pub async fn handle_currency(bot: Bot, msg: Message, text: String) -> ResponseRe
 
 fn parse_currency_args(args: String) -> Result<Vec<String>, ()> {
     let parts: Vec<String> = args.split_whitespace().map(String::from).collect();
-    if parts.len() !=  3 {
+    if parts.len() != 3 {
         return Err(());
     }
 
@@ -108,7 +116,6 @@ fn parse_currency_args(args: String) -> Result<Vec<String>, ()> {
     Ok(parts)
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::commands::currency::parse_currency_args;
@@ -116,7 +123,14 @@ mod tests {
     #[test]
     fn test_parse_currency_args() {
         let args = "100 USD EUR".to_string();
-        assert_eq!(parse_currency_args(args), Ok(vec!["100".to_string(), "USD".to_string(), "EUR".to_string()]));
+        assert_eq!(
+            parse_currency_args(args),
+            Ok(vec![
+                "100".to_string(),
+                "USD".to_string(),
+                "EUR".to_string()
+            ])
+        );
 
         let args = "USD EUR".to_string();
         let result = parse_currency_args(args);
@@ -129,6 +143,5 @@ mod tests {
         let args = "100 USD EUR Invalid".to_string();
         let result = parse_currency_args(args);
         assert!(result.is_err());
-
     }
 }

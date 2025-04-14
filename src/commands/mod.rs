@@ -1,4 +1,5 @@
 pub mod about;
+pub mod currency;
 pub mod echo;
 pub mod help;
 pub mod id;
@@ -8,7 +9,6 @@ pub mod roll;
 pub mod start;
 pub mod time;
 pub mod weather;
-pub mod currency;
 
 use teloxide::prelude::*;
 use teloxide::types::Message;
