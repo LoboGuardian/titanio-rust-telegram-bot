@@ -7,7 +7,7 @@ use dotenv::dotenv;
 use log::info;
 
 mod commands;
-use crate::commands::unrecognized::handle_unrecognized;
+use crate::commands::system::unrecognized::handle_unrecognized;
 use commands::{Command, dispatch_command};
 // Entry point of the bot.
 // The `#[tokio::main]` macro starts the Tokio async runtime automatically.

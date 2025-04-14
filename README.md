@@ -58,17 +58,23 @@ Your bot is now alive and rolling dice in reply to messages it receives! 🎉
 └── src
     ├── main.rs        # Bot entry point and command dispatcher
     └── commands/      # Modular handlers for each command
-        ├── about.rs
-        ├── echo.rs
-        ├── help.rs
-        ├── id.rs
-        ├── joke.rs
-        ├── mod.rs
-        ├── ping.rs
-        ├── roll.rs
-        ├── start.rs
-        ├── time.rs
-        └── weather.rs
+        ├── fun/
+        │   ├── joke.rs
+        │   └── roll.rs
+        ├── info/
+        │   ├── about.rs
+        │   ├── help.rs
+        │   ├── id.rs
+        │   └── time.rs
+        ├── system/
+        │   ├── start.rs
+        │   ├── ping.rs
+        │   └── unrecognized.rs
+        ├── utils/
+        │   ├── echo.rs
+        │   ├── currency.rs
+        │   └── weather.rs
+        └── mod.rs
 ```
 
 ## 💬 Supported Commands
