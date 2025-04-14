@@ -11,6 +11,14 @@ use commands::{Command, dispatch_command};
 
 // Entry point of the bot.
 // The `#[tokio::main]` macro starts the Tokio async runtime automatically.
+
+// The `flavor` attribute allows you to specify the type of runtime.
+// The `worker_threads` attribute allows you to specify the number of worker threads.
+// The default is `multi_thread` with 4 worker threads.
+// You can uncomment the following line to use a multi-threaded runtime with 4 worker threads.
+// This is useful for CPU-bound tasks or when you want to run multiple tasks in parallel.
+// #[tokio::main(flavor = "multi_thread", worker_threads = 4)]
+
 #[tokio::main]
 async fn main() {
     // Load environment variables from `.env` file, such as TELOXIDE_TOKEN
@@ -22,6 +30,13 @@ async fn main() {
 
     // Retrieve the bot token from the TELOXIDE_TOKEN environment variable
     let bot = Bot::from_env();
+
+    // Set the bot's name and username
+    // This is optional but can be useful for debugging or logging purposes.
+    match bot.get_me().send().await {
+        Ok(me) => info!("Bot started as: @{}", me.user.username.unwrap_or_default()),
+        Err(err) => log::error!("Failed to verify bot identity: {:?}", err),
+    }
 
     // Build the dispatcher that handles incoming Telegram updates
     Dispatcher::builder(
