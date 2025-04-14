@@ -1,4 +1,4 @@
-use log::debug;
+use log::info;
 use reqwest::{Client, StatusCode};
 use serde::Deserialize;
 use teloxide::{prelude::*, types::Message};
@@ -49,7 +49,7 @@ pub async fn handle_weather(bot: Bot, msg: Message, city: String) -> ResponseRes
                     Err(_) => "❌ Couldn't parse weather data.".to_string(),
                 }
             } else {
-                debug!("Invalid city name: {}", city);
+                info!("Invalid city name: {}", city);
                 "⚠️ Sorry, We couldn't find that city.".to_string()
             }
         }
