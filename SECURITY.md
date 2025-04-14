@@ -15,7 +15,7 @@ If you discover a security vulnerability in `titanio-rust-telegram-bot`, please 
 
 To report a vulnerability, please follow these steps:
 
-1.  **Direct Email:** Send an email to `LoboGuardian`. Please encrypt your email using PGP if possible. Include details about the vulnerability, including:
+1.  **Direct Email:** Send an email to [`LoboGuardian`](https://github.com/LoboGuardian/titanio-rust-telegram-bot/security/advisories/new). Please encrypt your email using PGP if possible. Include details about the vulnerability, including:
     * A clear description of the vulnerability.
     * Steps to reproduce the vulnerability.
     * The potential impact of the vulnerability.
