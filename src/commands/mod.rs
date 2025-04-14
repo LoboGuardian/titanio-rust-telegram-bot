@@ -8,6 +8,7 @@ pub mod roll;
 pub mod start;
 pub mod time;
 pub mod weather;
+pub mod currency;
 
 use teloxide::prelude::*;
 use teloxide::types::Message;
@@ -37,6 +38,8 @@ pub enum Command {
     Joke,
     #[command(description = "Check the weather in a city.")]
     Weather(String),
+    #[command(description = "Convert amount from one currency to another.")]
+    Currency(String),
 }
 
 /// Main command handler function.
@@ -53,5 +56,6 @@ pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseR
         Command::Ping => ping::handle_ping(bot, msg).await,
         Command::Joke => joke::handle_joke(bot, msg).await,
         Command::Weather(city) => weather::handle_weather(bot, msg, city).await,
+        Command::Currency(text) => currency::handle_currency(bot, msg, text).await,
     }
 }
