@@ -6,9 +6,9 @@ use teloxide::{dispatching::Dispatcher, error_handlers::LoggingErrorHandler, pre
 use dotenv::dotenv;
 use log::info;
 
-mod fallback;
 mod commands;
-use commands::{Command, dispatch_command, handle_unknown_command};
+use crate::commands::fallback::unknown_command::unrecognized;
+use commands::{Command, dispatch_command};
 
 // Entry point of the bot.
 // The `#[tokio::main]` macro starts the Tokio async runtime automatically.
@@ -50,12 +50,8 @@ async fn main() {
         // Fallback for unrecognized commands.
         .branch(
             Update::filter_message()
-                .filter(|msg: Message| {
-                    msg.text()
-                        .map(|t| t.starts_with('/'))
-                        .unwrap_or(false)
-                })
-                .endpoint(handle_unknown_command),
+                .filter(|msg: Message| msg.text().map(|t| t.starts_with('/')).unwrap_or(false))
+                .endpoint(unrecognized),
         );
 
     // Build the dispatcher that handles incoming Telegram updates

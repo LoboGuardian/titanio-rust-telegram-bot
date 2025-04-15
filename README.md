@@ -49,34 +49,38 @@ Your bot is now alive and rolling dice in reply to messages it receives! 🎉
 
 ## 📁 Project Structure
 
-```bash
+```rust
 .
-├── Cargo.toml         # Project metadata and dependencies
-├── .env               # Environment variables (not committed)
-├── README.md          # You're reading it!
-├── LICENSE            # MIT License
+├── Cargo.toml         // Project metadata and dependencies
+├── .env               // Environment variables (not committed)
+├── README.md          // You're reading it!
+├── LICENSE            // MIT License
 └── src
-    ├── commands/          # Modular command handlers
-    │   ├── fun/           # Fun and random commands
+    ├── commands/          // Modular command handlers
+    │   ├── fun/           // Fun and random commands
     │   │   ├── joke.rs
     │   │   └── roll.rs
-    │   ├── info/          # Informational and meta commands
+    │   │
+    │   ├── info/          // Informational and meta commands
     │   │   ├── about.rs
     │   │   ├── help.rs
     │   │   ├── id.rs
     │   │   └── time.rs
-    │   ├── system/        # System-related and bot control commands
+    │   │
+    │   ├── system/        // System-related and bot control commands
     │   │   ├── start.rs
     │   │   └── ping.rs
-    │   ├── utils/         # Utility and API-integrated commands
+    │   │
+    │   ├── utils/         // Utility and API-integrated commands
     │   │   ├── echo.rs
     │   │   ├── currency.rs
     │   │   └── weather.rs
-    │   └── mod.rs         # Command enum and dispatch logic
-    ├── fallback/          # Fallback handlers for invalid/unknown input
-    │   ├── mod.rs
-    │   └── unrecognized.rs
-    └─── main.rs           # Bot entry point and command dispatcher setup
+    │   │
+    │   ├── fallback/      // Fallback handlers for invalid/unknown input
+    │   │   ├── unknown_command.rs
+    │   └── mod.rs         // Command enum and dispatch logic
+    │
+    └─── main.rs           // Bot entry point and command dispatcher setup
 ```
 
 ## 💬 Supported Commands

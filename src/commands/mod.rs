@@ -1,5 +1,3 @@
-pub use crate::fallback::unknown_command::handle_unknown_command;
-
 pub mod fun {
     pub mod joke;
     pub mod roll;
@@ -21,6 +19,10 @@ pub mod utils {
     pub mod currency;
     pub mod echo;
     pub mod weather;
+}
+
+pub mod fallback {
+    pub mod unknown_command;
 }
 
 use teloxide::prelude::*;
