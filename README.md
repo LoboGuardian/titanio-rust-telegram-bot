@@ -133,6 +133,20 @@ Your bot is now alive and rolling dice in reply to messages it receives! 🎉
 - [`serde`](https://serde.rs) – JSON deserialization
 - [`log`](https://docs.rs/log),[`pretty_env_logger`](https://docs.rs/pretty_env_logger)  – logging
 
+
+## ❤️ Contributors
+
+We appreciate all the contributions to the Titanio bot!
+
+<a href="https://github.com/LoboGuardian">
+  <img src="https://github.com/LoboGuardian.png?size=64" width="64" height="64" alt="LoboGuardian" />
+</a>
+<a href="https://github.com/aodihis">
+  <img src="https://github.com/aodihis.png?size=64" width="64" height="64" alt="aodihis" />
+</a>
+
+**Want to contribute?** Check out our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get involved!
+
 ## 🃏 A joke
 
 Why not?

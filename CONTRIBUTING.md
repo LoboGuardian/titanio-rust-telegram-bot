@@ -114,3 +114,7 @@ If you have any questions or need help, feel free to:
 * Start a discussion.
 
 Thank you for contributing to Titanio! 🦀❤️
+
+<a href="https://github.com/aodihis">
+  <img src="https://github.com/aodihis.png?size=64" width="64" height="64" alt="aodihis" />
+</a>
