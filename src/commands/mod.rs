@@ -44,41 +44,50 @@ use crate::commands::{
     utils::{currency, echo, weather},
 };
 
-/// Enumeration of supported bot commands.
-///
-/// This `enum` defines all the commands that the bot can understand and process.
-/// Each variant of the `Command` enum is associated with a description
-/// that is used when generating the help message. The `BotCommands` derive macro
-/// from the `teloxide` crate automatically handles parsing commands from user input
-/// and generating help text based on the attributes specified here.
-///
-/// The `rename_rule = "lowercase"` attribute ensures that commands are matched
-/// case-insensitively and are expected in lowercase.
-///
-/// # Variants
-///
-/// ## System
-///
-/// * `Start`: Initiates the bot and typically sends a welcome message.
-/// * `Ping`: Checks the bot's responsiveness and confirms it's online.
-///
-/// ## Info
-///
-/// * `Help`: Displays a list of available commands and their descriptions.
-/// * `About`: Shows information about the bot, such as its name and version.
-/// * `Id`: Returns the user ID of the sender and the ID of the current chat.
-/// * `Time`: Provides the current time.
-///
-/// ## Utils
-///
-/// * `Echo(String)`: Repeats the text provided by the user after the command.
-/// * `Weather(String)`: Retrieves and displays the weather information for the specified city.
-/// * `Currency(String)`: Converts an amount from one currency to another based on the provided input string (e.g., "10 USD to EUR").
-///
-/// ## Fun
-///
-/// * `Roll`: Generates and displays a random number (typically between 1 and 100).
-/// * `Joke`: Tells a random humorous joke.
+
+// For any reason if I use `///` instead of `//` the bot send it as a message
+// to the user. This is a bug in the `teloxide` crate.
+// This is a workaround to avoid that behavior.
+// Check teloxide code to help fix it
+
+// / Enumeration of supported bot commands.
+// /
+// / This `enum` defines all the commands that the bot can understand and process.
+// / Each variant of the `Command` enum is associated with a description
+// / that is used when generating the help message. The `BotCommands` derive macro
+// / from the `teloxide` crate automatically handles parsing commands from user input
+// / and generating help text based on the attributes specified here.
+// /
+// / The `rename_rule = "lowercase"` attribute ensures that commands are matched
+// / case-insensitively and are expected in lowercase.
+// /
+// / # Variants
+// /
+// / ## System
+// /
+// / * `Start`: Initiates the bot and typically sends a welcome message.
+// / * `Ping`: Checks the bot's responsiveness and confirms it's online.
+// /
+// / ## Info
+// /
+// / * `Help`: Displays a list of available commands and their descriptions.
+// / * `About`: Shows information about the bot, such as its name and version.
+// / * `Id`: Returns the user ID of the sender and the ID of the current chat.
+// / * `Time`: Provides the current time.
+// /
+// / ## Utils
+// /
+// / * `Echo(String)`: Repeats the text provided by the user after the command.
+// / * `Weather(String)`: Retrieves and displays the weather information for the specified city.
+// / * `Currency(String)`: Converts an amount from one currency to another based on the provided input string (e.g., "10 USD to EUR").
+// /
+// / ## Fun
+// /
+// / * `Roll`: Generates and displays a random number (typically between 1 and 100).
+// / * `Joke`: Tells a random humorous joke.
+// /
+
+// / This enum is used to define the commands that the bot can handle.
 #[derive(BotCommands, Clone, Debug, PartialEq, Eq)]
 #[command(rename_rule = "lowercase", description = "Available commands:")]
 pub enum Command {
@@ -225,8 +234,6 @@ macro_rules! log_command_execution {
         }
     }};
 }
-
-
 
 /// Main command handler function.
 ///
