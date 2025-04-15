@@ -93,14 +93,13 @@ macro_rules! log_command {
     };
 }
 
-
 /// Main command handler function.
 /// Dispatches each command variant to its respective handler.
 pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
     log_command!(msg, &cmd);
-    
+
     let cmd_for_log = cmd.clone(); // <--- Clone BEFORE match
-    
+
     // Pattern match dispatch
     let result = match cmd {
         Command::Help => help::handle_help(bot, msg).await,
@@ -115,12 +114,12 @@ pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseR
         Command::Weather(city) => weather::handle_weather(bot, msg, city).await,
         Command::Currency(text) => currency::handle_currency(bot, msg, text).await,
     };
-    
+
     // Log outcome
     match &result {
         Ok(_) => log::info!("Command executed successfully: {:?}", cmd_for_log),
         Err(err) => log::error!("Error executing command {:?}: {:?}", cmd_for_log, err),
     }
-    
+
     result
 }

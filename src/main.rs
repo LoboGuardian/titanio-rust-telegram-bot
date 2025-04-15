@@ -26,7 +26,6 @@ async fn main() {
 
     // Initialize a pretty logger (uses `RUST_LOG` env var for filtering)
     pretty_env_logger::init();
-    info!("Starting titanio-rust-telegram-bot...");
 
     // Retrieve the bot token from the TELOXIDE_TOKEN environment variable
     let bot = Bot::from_env();
@@ -34,7 +33,10 @@ async fn main() {
     // Set the bot's name and username
     // This is optional but can be useful for debugging or logging purposes.
     match bot.get_me().send().await {
-        Ok(me) => info!("Bot started as: @{}", me.user.username.unwrap_or_default()),
+        Ok(me) => {
+            let username = me.user.username.unwrap_or_else(|| "<unknown>".to_string());
+            info!("Starting titanio-rust-telegram-bot as @{username}...");
+        }
         Err(err) => log::error!("Failed to verify bot identity: {:?}", err),
     }
 
