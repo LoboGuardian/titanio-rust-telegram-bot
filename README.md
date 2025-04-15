@@ -30,13 +30,23 @@ git clone https://github.com/LoboGuardian/titanio-rust-telegram-bot.git
 cd titanio-rust-telegram-bot
 ```
 
-2. **Create a .env file**
+2. **Set Up Environment Variables**
 
-In the root folder, create a .env file that looks like this:
+In the root folder, create a .env file with the environment variables required for the bot to function. You can use the provided env.example as a starting point:
+
+```bash
+cp env.example .env
+```
 
 ```ini
+# Required: Telegram bot token
 TELOXIDE_TOKEN=your_telegram_bot_token_here
-# Optional: other keys like weather API
+
+# Required: Currency conversion API token (https://exchangerate.host/)
+EXCHANGERATE_TOKEN=your_exchangerate_api_key_here
+
+# Optional: Control Rust logging level
+RUST_LOG=info
 ```
 
 3. **Run the bot**
