@@ -18,9 +18,8 @@ use commands::{Command, dispatch_command};
 // The default is `multi_thread` with 4 worker threads.
 // You can uncomment the following line to use a multi-threaded runtime with 4 worker threads.
 // This is useful for CPU-bound tasks or when you want to run multiple tasks in parallel.
-// #[tokio::main(flavor = "multi_thread", worker_threads = 4)]
 
-#[tokio::main]
+#[tokio::main(flavor = "multi_thread", worker_threads = 4)]
 async fn main() {
     // Load environment variables from `.env` file, such as TELOXIDE_TOKEN
     dotenv().ok();
@@ -55,18 +54,15 @@ async fn main() {
         );
 
     // Build the dispatcher that handles incoming Telegram updates
-    Dispatcher::builder(
-        // Cloning the bot is cheap: it's internally reference-counted
-        bot.clone(),
-        command_handler,
-    )
-    // Handle updates that didn't match any known command
-    .default_handler(|upd| async move {
-        log::warn!("Unhandled update: {:?}", upd);
-    })
-    // Customize how errors are logged
-    .error_handler(LoggingErrorHandler::with_custom_text("Error in dispatcher"))
-    .build()
-    .dispatch()
-    .await;
+    // Cloning the bot is cheap: it's internally reference-counted
+    Dispatcher::builder(bot.clone(), command_handler)
+        // Handle updates that didn't match any known command
+        .default_handler(|upd| async move {
+            log::warn!("Unhandled update: {:?}", upd);
+        })
+        // Customize how errors are logged
+        .error_handler(LoggingErrorHandler::with_custom_text("Error in dispatcher"))
+        .build()
+        .dispatch()
+        .await;
 }
