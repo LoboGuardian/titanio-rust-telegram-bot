@@ -29,6 +29,7 @@ use teloxide::prelude::*;
 use teloxide::types::Message;
 use teloxide::utils::command::BotCommands;
 
+// Importing the bot commands and their handlers
 use crate::commands::{
     fun::{joke, roll},
     info::{about, help, id, time},
@@ -37,7 +38,7 @@ use crate::commands::{
 };
 
 /// Enumeration of supported bot commands
-#[derive(BotCommands, Clone)]
+#[derive(BotCommands, Clone, Debug, PartialEq, Eq)]
 #[command(rename_rule = "lowercase", description = "Available commands:")]
 pub enum Command {
     // System
@@ -71,10 +72,37 @@ pub enum Command {
     Joke,
 }
 
+// This macro should move to a separate file in the future.
+//
+/// Macro to log command execution details.
+/// It logs the command being executed, the user who executed it, and the chat ID.
+/// This is useful for debugging and tracking command usage.
+macro_rules! log_command {
+    ($msg:expr, $cmd:expr) => {
+        if let Some(user) = $msg.from.as_ref() {
+            log::info!(
+                "Executing command: {:?} by user: {} (@{}) in chat: {}",
+                $cmd,
+                user.id,
+                user.username.as_deref().unwrap_or("unknown"),
+                $msg.chat.id
+            );
+        } else {
+            log::info!("Executing command: {:?} in chat: {}", $cmd, $msg.chat.id);
+        }
+    };
+}
+
+
 /// Main command handler function.
 /// Dispatches each command variant to its respective handler.
 pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
-    match cmd {
+    log_command!(msg, &cmd);
+    
+    let cmd_for_log = cmd.clone(); // <--- Clone BEFORE match
+    
+    // Pattern match dispatch
+    let result = match cmd {
         Command::Help => help::handle_help(bot, msg).await,
         Command::Start => start::handle_start(bot, msg).await,
         Command::Echo(text) => echo::handle_echo(bot, msg, text).await,
@@ -86,5 +114,13 @@ pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command) -> ResponseR
         Command::Joke => joke::handle_joke(bot, msg).await,
         Command::Weather(city) => weather::handle_weather(bot, msg, city).await,
         Command::Currency(text) => currency::handle_currency(bot, msg, text).await,
+    };
+    
+    // Log outcome
+    match &result {
+        Ok(_) => log::info!("Command executed successfully: {:?}", cmd_for_log),
+        Err(err) => log::error!("Error executing command {:?}: {:?}", cmd_for_log, err),
     }
+    
+    result
 }
