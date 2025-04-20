@@ -1,8 +1,11 @@
 use teloxide::{prelude::*, types::Message};
 
-// This function handles the `/ping` command and sends a "Pong!" message to the user.
+/// Handles the `/ping` command by replying with a "Pong!" message.
 pub async fn handle_ping(bot: Bot, msg: Message) -> ResponseResult<()> {
-    bot.send_message(msg.chat.id, "🏓 Pong! The bot is alive!")
-        .await?;
+    let chat_id = msg.chat.id;
+    let response_text = "🏓 Pong! The bot is alive!";
+
+    bot.send_message(chat_id, response_text).await?;
+
     Ok(())
 }
