@@ -9,6 +9,11 @@ use log::info;
 mod commands;
 use crate::commands::fallback::unknown_command::unrecognized;
 use commands::{Command, dispatch_command};
+mod services;
+use services::ApiService;
+use dptree::deps;
+use std::sync::Arc;
+
 
 // Entry point of the bot.
 // The `#[tokio::main]` macro starts the Tokio async runtime automatically.
@@ -29,6 +34,9 @@ async fn main() {
 
     // Retrieve the bot token from the TELOXIDE_TOKEN environment variable
     let bot = Bot::from_env();
+
+    let exchange_token = std::env::var("EXCHANGERATE_TOKEN").ok();
+    let api_service = Arc::new(ApiService::new(exchange_token));
 
     // Set the bot's name and username
     // This is optional but can be useful for debugging or logging purposes.
@@ -58,6 +66,7 @@ async fn main() {
     // Build the dispatcher that handles incoming Telegram updates
     // Cloning the bot is cheap: it's internally reference-counted
     Dispatcher::builder(bot.clone(), command_handler)
+        .dependencies(deps![bot.clone(), api_service.clone()])
         // Handle updates that didn't match any known command
         .default_handler(|upd| async move {
             log::warn!("Unhandled update: {:?}", upd);
