@@ -10,10 +10,9 @@ mod commands;
 use crate::commands::fallback::unknown_command::unrecognized;
 use commands::{Command, dispatch_command};
 mod services;
-use services::ApiService;
 use dptree::deps;
+use services::ApiService;
 use std::sync::Arc;
-
 
 // Entry point of the bot.
 // The `#[tokio::main]` macro starts the Tokio async runtime automatically.

@@ -1,11 +1,16 @@
-use teloxide::{prelude::*, types::Message};
-use std::sync::Arc;
 use crate::services::ApiService;
+use std::sync::Arc;
+use teloxide::{prelude::*, types::Message};
 
-
-pub async fn handle_weather(bot: Bot, msg: Message, city: String, api: Arc<ApiService>) -> ResponseResult<()> {
+pub async fn handle_weather(
+    bot: Bot,
+    msg: Message,
+    city: String,
+    api: Arc<ApiService>,
+) -> ResponseResult<()> {
     if city.trim().is_empty() {
-        bot.send_message(msg.chat.id, "⚠️ Please enter a valid city name.").await?;
+        bot.send_message(msg.chat.id, "⚠️ Please enter a valid city name.")
+            .await?;
         return Ok(());
     }
 

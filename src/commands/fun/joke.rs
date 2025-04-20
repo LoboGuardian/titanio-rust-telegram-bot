@@ -1,6 +1,6 @@
-use teloxide::{prelude::*, types::Message};
-use std::sync::Arc;
 use crate::services::ApiService;
+use std::sync::Arc;
+use teloxide::{prelude::*, types::Message};
 
 pub async fn handle_joke(bot: Bot, msg: Message, api: Arc<ApiService>) -> ResponseResult<()> {
     let reply = match api.get_joke().await {

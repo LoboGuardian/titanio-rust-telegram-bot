@@ -134,12 +134,10 @@ impl ApiService {
             return Err("City not found".to_owned());
         }
 
-        resp.json::<WeatherData>()
-            .await
-            .map_err(|e| {
-                error!("Weather response parsing failed: {}", e);
-                "Failed to parse weather data".to_owned()
-            })
+        resp.json::<WeatherData>().await.map_err(|e| {
+            error!("Weather response parsing failed: {}", e);
+            "Failed to parse weather data".to_owned()
+        })
     }
 
     /// Fetches a random joke (single-line or two-part) from JokeAPI.

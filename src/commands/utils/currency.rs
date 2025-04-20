@@ -1,7 +1,7 @@
-use log::error;
-use teloxide::{prelude::*, types::Message};
-use std::sync::Arc;
 use crate::services::ApiService;
+use log::error;
+use std::sync::Arc;
+use teloxide::{prelude::*, types::Message};
 
 //
 // ## API Provider
@@ -25,7 +25,12 @@ use crate::services::ApiService;
 // - Higher tiers are available for increased usage and additional features.
 // - Usage beyond the free tier may require upgrading to a paid plan.
 // For more about pricing, visit: [https://exchangerate.host/pricing](https://exchangerate.host/pricing)
-pub async fn handle_currency(bot: Bot, msg: Message, text: String, api: Arc<ApiService>) -> ResponseResult<()> {
+pub async fn handle_currency(
+    bot: Bot,
+    msg: Message,
+    text: String,
+    api: Arc<ApiService>,
+) -> ResponseResult<()> {
     let parts = match parse_currency_args(text) {
         Ok(parts) => parts,
         Err(_) => {

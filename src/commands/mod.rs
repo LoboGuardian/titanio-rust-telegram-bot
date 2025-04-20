@@ -44,9 +44,8 @@ use crate::commands::{
     utils::{currency, echo, weather},
 };
 
-use std::sync::Arc;
 use crate::services::ApiService;
-
+use std::sync::Arc;
 
 // For any reason if I use `///` instead of `//` the bot send it as a message
 // to the user. This is a bug in the `teloxide` crate.
@@ -328,7 +327,12 @@ macro_rules! log_command_execution {
 /// //     Ok(())
 /// // }
 /// ```
-pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command, api: Arc<ApiService>,) -> ResponseResult<()> {
+pub async fn dispatch_command(
+    bot: Bot,
+    msg: Message,
+    cmd: Command,
+    api: Arc<ApiService>,
+) -> ResponseResult<()> {
     let cmd_for_log = cmd.clone(); // Save for logging after match
     let msg_clone = msg.clone(); // clone early to avoid double borrows
     let start = Instant::now();
@@ -345,7 +349,9 @@ pub async fn dispatch_command(bot: Bot, msg: Message, cmd: Command, api: Arc<Api
         Command::Ping => ping::handle_ping(bot, msg_clone).await,
         Command::Joke => joke::handle_joke(bot, msg_clone, api.clone()).await,
         Command::Weather(city) => weather::handle_weather(bot, msg_clone, city, api.clone()).await,
-        Command::Currency(text) => currency::handle_currency(bot, msg_clone, text, api.clone()).await,
+        Command::Currency(text) => {
+            currency::handle_currency(bot, msg_clone, text, api.clone()).await
+        }
     };
 
     let duration = start.elapsed();
