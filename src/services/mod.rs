@@ -1,153 +1,100 @@
-// src/services/api.rs
-//! A shared API service module to handle all external HTTP-based data fetching for the bot.
-//!
-//! This includes endpoints for weather, jokes, and currency conversion.
-//! Centralizing the API logic here allows command modules to remain clean, modular, and testable.
+// src/services/mod.rs (OPTIMIZED)
 
-use log::{error, info};
+//! Centralized API service layer for external HTTP data fetching.
+//!
+//! Provides type-safe, ergonomic interfaces to third-party APIs while abstracting
+//! transport concerns from command handlers.
+
+mod error;
+mod models;
+
+pub use error::ServiceError;
+pub use models::{ExchangerateResponse, JokeResponse, WeatherData};
+
 use reqwest::{Client, StatusCode};
 use serde::Deserialize;
 
-/// Top-level weather data returned from the wttr.in API.
-#[derive(Debug, Deserialize)]
-pub struct WeatherData {
-    /// Current weather conditions.
-    pub current_condition: Vec<CurrentCondition>,
-}
-
-/// A single snapshot of current weather.
-#[derive(Debug, Deserialize)]
-pub struct CurrentCondition {
-    /// Temperature in Celsius.
-    #[serde(rename = "temp_C")]
-    pub temp_c: String,
-
-    /// Textual description of the weather.
-    #[serde(rename = "weatherDesc")]
-    pub weather_desc: Vec<WeatherDesc>,
-}
-
-/// Weather description, e.g., "Sunny", "Light rain".
-#[derive(Debug, Deserialize)]
-pub struct WeatherDesc {
-    /// Description text.
-    pub value: String,
-}
-
-/// Response type returned by JokeAPI, which can be either single or two-part.
-#[derive(Debug, Deserialize)]
-#[serde(untagged)]
-pub enum JokeResponse {
-    /// A single-line joke.
-    Single { joke: String },
-    /// A setup + delivery style joke.
-    TwoPart { setup: String, delivery: String },
-}
-
-/// JSON response from exchangerate.host API.
-#[derive(Debug, Deserialize)]
-pub struct ExchangerateResponse {
-    /// Whether the request was successful.
-    pub success: bool,
-    /// The numeric result of the currency conversion.
-    pub result: Option<f64>,
-    /// Optional error details if the request failed.
-    pub error: Option<ErrorData>,
-}
-
-/// Represents an error returned by exchangerate.host.
-#[allow(dead_code)]
-#[derive(Debug, Deserialize)]
-pub struct ErrorData {
-    /// Numeric error code.
-    pub code: i32,
-    /// Human-readable explanation of the error.
-    pub info: String,
-}
-
 /// Shared HTTP client and API credentials container.
+///
+/// Encapsulates all external API interactions with connection pooling
+/// and timeout management.
 pub struct ApiService {
     client: Client,
-    /// Shared HTTP client and API credentials container.
-    pub exchange_token: Option<String>,
+    exchange_token: Option<String>,
 }
 
 impl ApiService {
     /// Creates a new `ApiService` with an optional exchangerate API token.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the HTTP client cannot be constructed (rare - indicates
+    /// invalid TLS configuration or system resource exhaustion).
     pub fn new(exchange_token: Option<String>) -> Self {
         Self {
-            client: Client::new(),
+            client: Client::builder()
+                .timeout(std::time::Duration::from_secs(10))
+                .build()
+                .expect("Failed to build HTTP client"),
             exchange_token,
         }
     }
 
-    /// Generic helper for GET requests that parse JSON responses.
+    /// Generic HTTP GET with JSON deserialization.
     ///
-    /// Logs errors if request or deserialization fails.
-    ///
-    /// # Type Parameters
-    ///
-    /// * `T`: The expected type of the parsed JSON response.
-    ///
-    /// # Arguments
-    ///
-    /// * `url` - The full URL to send the request to.
-    ///
-    /// # Errors
-    ///
-    /// Returns a string-based error if the request fails or parsing fails.
-    async fn get_json<T: for<'de> Deserialize<'de>>(&self, url: &str) -> Result<T, String> {
+    /// Centralizes request/response error handling with structured logging.
+    async fn fetch_json<T>(&self, url: &str) -> Result<T, ServiceError>
+    where
+        T: for<'de> Deserialize<'de>,
+    {
         self.client
             .get(url)
             .send()
             .await
-            .map_err(|e| {
-                error!("Request failed: {} | URL: {}", e, url);
-                "Request failed".to_owned()
-            })?
+            .map_err(|e| ServiceError::network(url, e))?
             .json::<T>()
             .await
-            .map_err(|e| {
-                error!("Failed to parse response: {} | URL: {}", e, url);
-                "Parse failed".to_owned()
-            })
+            .map_err(|e| ServiceError::parse(url, e))
     }
 
-    /// Retrieves weather data from wttr.in for the given city.
-    ///
-    /// # Arguments
-    ///
-    /// * `city` - Name of the city to query.
+    /// Retrieves current weather conditions for a given city.
     ///
     /// # Errors
     ///
-    /// Returns a string error if the request fails or the city is not found.
-    pub async fn get_weather(&self, city: &str) -> Result<WeatherData, String> {
-        let url = format!("https://wttr.in/{}?format=j1", city);
-        let resp = self.client.get(&url).send().await.map_err(|e| {
-            error!("Weather request failed: {}", e);
-            "Request failed".to_owned()
-        })?;
+    /// Returns `ServiceError::NotFound` if the city doesn't exist,
+    /// or propagates network/parse errors from `fetch_json`.
+    pub async fn get_weather(&self, city: &str) -> Result<WeatherData, ServiceError> {
+        let url = format!(
+            "https://wttr.in/{}?format=j1",
+            urlencoding::encode(city)
+        );
 
-        if resp.status() == StatusCode::NOT_FOUND {
-            error!("Weather city not found: {}", city);
-            return Err("City not found".to_owned());
+        let response = self
+            .client
+            .get(&url)
+            .send()
+            .await
+            .map_err(|e| ServiceError::network(&url, e))?;
+
+        match response.status() {
+            StatusCode::NOT_FOUND => Err(ServiceError::not_found("City", city)),
+            StatusCode::OK => response
+                .json::<WeatherData>()
+                .await
+                .map_err(|e| ServiceError::parse(&url, e)),
+            status => Err(ServiceError::unexpected_status(&url, status)),
         }
-
-        resp.json::<WeatherData>().await.map_err(|e| {
-            error!("Weather response parsing failed: {}", e);
-            "Failed to parse weather data".to_owned()
-        })
     }
 
-    /// Fetches a random joke (single-line or two-part) from JokeAPI.
+    /// Fetches a random joke from JokeAPI.
     ///
     /// # Errors
     ///
-    /// Returns an error string if the request fails or the response can't be parsed.
-    pub async fn get_joke(&self) -> Result<String, String> {
-        let url = "https://v2.jokeapi.dev/joke/Any?safe-mode&type=single,twopart";
-        let joke = self.get_json::<JokeResponse>(url).await?;
+    /// Propagates network or parsing errors as `ServiceError`.
+    pub async fn get_joke(&self) -> Result<String, ServiceError> {
+        const JOKE_URL: &str = "https://v2.jokeapi.dev/joke/Any?safe-mode&type=single,twopart";
+
+        let joke = self.fetch_json::<JokeResponse>(JOKE_URL).await?;
 
         Ok(match joke {
             JokeResponse::Single { joke } => joke,
@@ -155,52 +102,41 @@ impl ApiService {
         })
     }
 
-    /// Converts an amount from one currency to another using exchangerate.host.
-    ///
-    /// Requires a valid API key set via `EXCHANGERATE_TOKEN` in the environment.
-    ///
-    /// # Arguments
-    ///
-    /// * `amount` - The amount to convert.
-    /// * `from` - The source currency code (e.g., "USD").
-    /// * `to` - The target currency code (e.g., "EUR").
+    /// Converts currency using exchangerate.host API.
     ///
     /// # Errors
     ///
-    /// Returns an error if:
-    /// - The API token is missing
-    /// - The request or parsing fails
-    /// - The API itself returns an error
-    pub async fn convert_currency(&self, amount: f64, from: &str, to: &str) -> Result<f64, String> {
-        let token = match self.exchange_token.as_ref() {
-            Some(t) => t,
-            None => {
-                error!(
-                    "Missing EXCHANGERATE_TOKEN | Tried converting: {} {} -> {}",
-                    amount, from, to
-                );
-                return Err("Missing API token".to_owned());
-            }
-        };
+    /// Returns `ServiceError::MissingToken` if API key is not configured,
+    /// `ServiceError::Api` for upstream errors, or propagates network/parse errors.
+    pub async fn convert_currency(
+        &self,
+        amount: f64,
+        from: &str,
+        to: &str,
+    ) -> Result<f64, ServiceError> {
+        let token = self
+            .exchange_token
+            .as_ref()
+            .ok_or_else(|| ServiceError::missing_token("EXCHANGERATE_TOKEN"))?;
 
         let url = format!(
             "https://api.exchangerate.host/convert?access_key={}&from={}&to={}&amount={}",
-            token, from, to, amount
+            token,
+            from.to_uppercase(),
+            to.to_uppercase(),
+            amount
         );
 
-        let data = self.get_json::<ExchangerateResponse>(&url).await?;
+        let data = self.fetch_json::<ExchangerateResponse>(&url).await?;
 
         if data.success {
-            Ok(data.result.unwrap_or(0.0))
-        } else if let Some(err) = data.error {
-            error!(
-                "Currency API error: code={}, info='{}' | {} {} -> {}",
-                err.code, err.info, amount, from, to
-            );
-            Err(err.info)
+            data.result
+                .ok_or_else(|| ServiceError::missing_field("result", &url))
         } else {
-            error!("Currency API failed without error message.");
-            Err("Unknown error".to_owned())
+            Err(ServiceError::api_error(
+                &url,
+                data.error.as_ref().map(|e| e.info.as_str()),
+            ))
         }
     }
 }

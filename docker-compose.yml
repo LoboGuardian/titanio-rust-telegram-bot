@@ -1,0 +1,56 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: titanio-rust-telegram-bot:latest
+    container_name: titanio-bot
+    restart: unless-stopped
+    
+    # Environment variables (REPLACE WITH YOUR ACTUAL TOKENS)
+    environment:
+      - TELOXIDE_TOKEN=${TELOXIDE_TOKEN}
+      - EXCHANGERATE_TOKEN=${EXCHANGERATE_TOKEN}
+      - RUST_LOG=info
+    
+    # Alternative: Use env_file instead
+    # env_file:
+    #   - .env
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    
+    # Read-only root filesystem (optional - requires writable /tmp)
+    # read_only: true
+    # tmpfs:
+    #   - /tmp
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Network mode (bridge is default)
+    networks:
+      - bot-network
+
+networks:
+  bot-network:
+    driver: bridge

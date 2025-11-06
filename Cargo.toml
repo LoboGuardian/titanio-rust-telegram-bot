@@ -1,12 +1,15 @@
+# Cargo.toml
 [package]
 name = "titanio-rust-telegram-bot"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.85"
 authors = ["LoboGuardian"]
-description = "A Telegram bot written in Rust using teloxide"
+description = "A modular Telegram bot built with Rust and Teloxide"
 repository = "https://github.com/LoboGuardian/titanio-rust-telegram-bot"
-
 license = "MIT"
+keywords = ["telegram", "bot", "teloxide", "async"]
+categories = ["network-programming", "asynchronous"]
 
 [dependencies]
 chrono = "0.4.40"
@@ -14,6 +17,7 @@ dotenv = "0.15"
 log = "0.4.27"
 pretty_env_logger = "0.5.0"
 reqwest = "0.12.15"
+urlencoding = "2.1"
 serde = { version = "1.0.219", features = ["derive"] }
-teloxide = { version = "0.15.0", features = ["macros"] }
+teloxide = { version = "0.17.0", features = ["macros"] }
 tokio = { version =  "1.44.2", features = ["rt-multi-thread", "macros"] }

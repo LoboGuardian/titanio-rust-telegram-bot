@@ -1,0 +1,35 @@
+# .dockerignore
+
+# Rust build artifacts
+target/
+**/*.rs.bk
+**/*.pdb
+
+# Development files
+.git/
+.gitignore
+.env
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation
+README.md
+docs/
+*.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Test files
+tests/
+benches/
+
+# Logs
+*.log
